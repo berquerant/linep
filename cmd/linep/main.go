@@ -22,7 +22,7 @@ func failOnError(err error) {
 func main() {
 	fs := pflag.NewFlagSet("main", pflag.ContinueOnError)
 	fs.Usage = func() {
-		fmt.Fprintf(os.Stderr, usage, os.Args[0])
+		fmt.Fprintf(os.Stderr, usage, "linep")
 		fs.PrintDefaults()
 	}
 
@@ -44,7 +44,7 @@ func main() {
 	}
 }
 
-const usage = `linep -- process lines by one liner
+const usage = `%[1]s -- process lines by one liner
 
 Usage:
 %[1]s LANG MAP [FLAGS]
