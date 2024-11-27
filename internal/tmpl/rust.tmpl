@@ -1,0 +1,18 @@
+use std::io;
+{{- range .Imports}}
+{{.}};
+{{- end}}
+
+fn main() {
+  {{- with .Init}}
+  {{.}}
+  {{- end}}
+  let __lines = io::stdin().lines();
+  for __line in __lines {
+    let x = __line.unwrap();
+    {{.Map}}
+  }
+  {{- with .Reduce}}
+  {{.}}
+  {{- end}}
+}
