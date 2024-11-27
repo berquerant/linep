@@ -28,6 +28,18 @@ jobs:
           go-version: ${{ matrix.go-version }}
           check-latest: true
           cache-dependency-path: go.sum
+      - name: Setup Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pipenv"
+      - name: Install pipenv
+        run: pip install --user pipenv
+      - name: Setup Rust
+        run: |
+          set -e
+          rustup set profile minimal
+          rustup install stable
       - name: Display Go version
         run: go version
       - name: Lint
