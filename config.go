@@ -26,6 +26,7 @@ type Config struct {
 	Map        string     `json:"map"`
 	Reduce     string     `json:"reduce"`
 	WorkDir    string     `json:"workDir" name:"workDir" usage:"working directory" default:".linep"`
+	PWD        string     `json:"pwd"`
 }
 
 func (c Config) SetupLogger() { internal.SetupLogger(c.Debug, c.Quiet) }

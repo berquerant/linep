@@ -77,6 +77,7 @@ func (r Runner) runExec(ctx context.Context, filename string) error {
 		internal.WithStdoutWriter(os.Stdout),
 		internal.WithStderrWriter(r.stderr()),
 		internal.WithDir(filepath.Dir(filename)),
+		internal.WithPWD(r.PWD),
 	)
 }
 
@@ -102,6 +103,7 @@ func (r Runner) runPreExec(ctx context.Context, filename string) error {
 		internal.WithStdoutWriter(&buf), // stdout of preCmd will be script
 		internal.WithStderrWriter(r.stderr()),
 		internal.WithDir(filepath.Dir(filename)),
+		internal.WithPWD(r.PWD),
 	); err != nil {
 		return err
 	}
@@ -123,6 +125,7 @@ func (r Runner) runInit(ctx context.Context, dir string) error {
 			internal.WithDir(dir),
 			internal.WithStdoutWriter(r.stderr()), // redirect to stderr
 			internal.WithStderrWriter(r.stderr()),
+			internal.WithPWD(r.PWD),
 		); err != nil {
 			return err
 		}

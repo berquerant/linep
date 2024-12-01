@@ -47,5 +47,11 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 	}
 	config.Lang = fs.Arg(1)
 
+	if x, err := os.Getwd(); err == nil {
+		config.PWD = x
+	} else {
+		config.PWD = "."
+	}
+
 	return &config, nil
 }

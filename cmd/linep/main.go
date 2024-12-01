@@ -107,5 +107,8 @@ Environment variables:
 You can use the flag name with the hyphen removed and converted to uppercase as an environment variable.
 If both the corresponding flag and the environment variable are specified at the same time, the flag takes precedence.
 
+PWD is the temporary directory where the generated script exists.
+If you want to refer to the directory from which linep is executed, please use EXEC_PWD.
+
 Flags:
 `
