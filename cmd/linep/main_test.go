@@ -26,6 +26,18 @@ func TestEndToEnd(t *testing.T) {
 		want  string
 	}{
 		{
+			title: "EXEC_PWD",
+			input: `main_test.go`,
+			args: []string{
+				"py",
+				`print(p.Path(os.environ["EXEC_PWD"]+"/"+x).exists())`,
+				`--import`,
+				`os|pathlib as p`,
+			},
+			want: `True
+`,
+		},
+		{
 			title: "rust map",
 			input: `1
 2
