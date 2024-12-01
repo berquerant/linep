@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"io"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -42,8 +43,26 @@ func NewGoTemplate() Template {
 //go:embed tmpl/python.tmpl
 var pythonTemplate []byte
 
+type PythonTemplate struct {
+	t Template
+}
+
 func NewPythonTemplate() Template {
-	return newBaseTemplate("python", string(pythonTemplate))
+	return &PythonTemplate{newBaseTemplate("python", string(pythonTemplate))}
+}
+
+func (t PythonTemplate) Execute(w io.Writer, data *TemplateArgs) error {
+	ss := strings.Split(data.Map, "\n")
+	xs := make([]string, len(ss))
+	for i, x := range ss {
+		if i == 0 {
+			xs[i] = x
+			continue
+		}
+		xs[i] = "    " + x
+	}
+	data.Map = strings.Join(xs, "\n")
+	return t.t.Execute(w, data)
 }
 
 //go:embed tmpl/rust.tmpl

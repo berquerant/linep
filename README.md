@@ -61,6 +61,30 @@ except BrokenPipeError:
     pass
 print(sum(acc))
 
+# indent MAP (python)
+> linep py 'r={}' 'x=x.split(".")[-1]
+if x in r:
+  r[x]+=1
+else:
+  r[x]=1' 'for k, v in r.items():
+  print(f"{k}\t{v}")' --dry
+import sys
+import signal
+signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+r={}
+try:
+  for x in sys.stdin:
+    x = x.rstrip()
+    x=x.split(".")[-1]
+    if x in r:
+      r[x]+=1
+    else:
+      r[x]=1
+except BrokenPipeError:
+  pass
+for k, v in r.items():
+  print(f"{k}\t{v}")
+
 Environment variables:
 You can use the flag name with the hyphen removed and converted to uppercase as an environment variable.
 If both the corresponding flag and the environment variable are specified at the same time, the flag takes precedence.

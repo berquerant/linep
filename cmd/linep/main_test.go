@@ -26,6 +26,19 @@ func TestEndToEnd(t *testing.T) {
 		want  string
 	}{
 		{
+			title: "python indent",
+			input: `main_test.go`,
+			args: []string{
+				"py",
+				`with open(os.environ["EXEC_PWD"]+"/"+x) as f:
+  print(f.readline().rstrip())`,
+				"--import",
+				"os",
+			},
+			want: `package main_test
+`,
+		},
+		{
 			title: "EXEC_PWD",
 			input: `main_test.go`,
 			args: []string{
