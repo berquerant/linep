@@ -11,11 +11,13 @@ func _() {
 	_ = x[Lunknown-0]
 	_ = x[Lgo-1]
 	_ = x[Lpython-2]
+	_ = x[LpythonPipenv-3]
+	_ = x[Lrust-4]
 }
 
-const _Lang_name = "LunknownLgoLpython"
+const _Lang_name = "LunknownLgoLpythonLpythonPipenvLrust"
 
-var _Lang_index = [...]uint8{0, 8, 11, 18}
+var _Lang_index = [...]uint8{0, 8, 11, 18, 31, 36}
 
 func (i Lang) String() string {
 	if i < 0 || i >= Lang(len(_Lang_index)-1) {
