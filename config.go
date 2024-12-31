@@ -14,18 +14,18 @@ type Config struct {
 	InitCmd    [][]string `json:"initCmd" name:"init" usage:"override commands to modify script environment; separated by semicolon"`
 	PreExecCmd []string   `json:"preCmd" name:"preCmd" usage:"additional command to modify script; separated by space; stdout will be modified file content"`
 	ExecCmd    []string   `json:"cmd" name:"cmd" usage:"override command to execute script; separated by space"`
-	Imports    []string   `json:"import" name:"import" usage:"additional libraries; separated by pipe"`
+	Imports    []string   `json:"import" name:"import" short:"i" usage:"additional libraries; separated by pipe"`
 	Template   string     `json:"tmpl" name:"tmpl" usage:"override script template or template filename"`
 	Main       string     `json:"main" name:"main" usage:"override script filename"`
 	Dry        bool       `json:"dry" name:"dry" usage:"do not run; display generated script"`
 	Debug      bool       `json:"debug" name:"debug" usage:"enable debug logs"`
-	Quiet      bool       `json:"quiet" name:"quiet" usage:"quiet stderr logs"`
+	Quiet      bool       `json:"quiet" name:"quiet" short:"q" usage:"quiet stderr logs"`
 	Keep       bool       `json:"keep" name:"keep" usage:"keep generated script directory"`
 	Lang       string     `json:"lang"`
 	Init       string     `json:"init"`
 	Map        string     `json:"map"`
 	Reduce     string     `json:"reduce"`
-	WorkDir    string     `json:"workDir" name:"workDir" usage:"working directory" default:".linep"`
+	WorkDir    string     `json:"workDir" name:"workDir" short:"w" usage:"working directory" default:".linep"`
 	PWD        string     `json:"pwd"`
 }
 
