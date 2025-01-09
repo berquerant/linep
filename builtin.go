@@ -1,6 +1,10 @@
 package linep
 
-import "gopkg.in/yaml.v3"
+import (
+	_ "embed"
+
+	"gopkg.in/yaml.v3"
+)
 
 //go:embed template/empty.yml
 var emptyTemplate []byte
