@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -51,15 +52,19 @@ func (e *Executor) Execute(ctx context.Context) error {
 		return nil
 	}
 
+	slog.Debug("init")
 	if err := e.init(); err != nil {
 		return fmt.Errorf("%w: exec init", err)
 	}
+	slog.Debug("render")
 	if err := e.renderTemplate(); err != nil {
 		return fmt.Errorf("%w: render template", err)
 	}
+	slog.Debug("run init")
 	if err := e.runScript(ctx, nil, e.Template.Init); err != nil {
 		return fmt.Errorf("%w: run init", err)
 	}
+	slog.Debug("run exec")
 	if err := e.runScript(ctx, e.Stdin, e.Template.Exec); err != nil {
 		return fmt.Errorf("%w: run exec", err)
 	}
@@ -97,10 +102,15 @@ func (Executor) replaceMacros(s string) string {
 		"MAIN_DIR",
 		"WORK_DIR",
 	}
-	v := make([]string, len(seed)*2)
-	for i, x := range seed {
+	var (
+		v = make([]string, len(seed)*2)
+		i int
+	)
+	for _, x := range seed {
 		v[i] = "@" + x
-		v[i+1] = fmt.Sprintf(`"%s"`, x)
+		i++
+		v[i] = fmt.Sprintf(`"${%s}"`, x)
+		i++
 	}
 	return strings.NewReplacer(v...).Replace(s)
 }
@@ -119,11 +129,12 @@ func (e Executor) runScript(
 	stdin io.Reader,
 	script string,
 ) error {
+	script = e.replaceMacros(script)
 	s := execx.NewScript(script, e.Shell[0], e.Shell[1:]...)
 	s.Env = e.newEnv()
 	s.KeepScriptFile = e.KeepScript
 
-	return s.Runner(func(cmd *execx.Cmd) error {
+	err := s.Runner(func(cmd *execx.Cmd) error {
 		cmd.Dir = e.tmpDir
 		cmd.Stdin = stdin
 		_, err := cmd.Run(
@@ -135,6 +146,13 @@ func (e Executor) runScript(
 		)
 		return err
 	})
+	slog.Debug("Executor",
+		slog.String("Dir", e.tmpDir),
+		slog.String("script", script),
+		slog.String("expaned_script", s.Env.Expand(script)),
+		WithErr(err),
+	)
+	return err
 }
 
 func (Executor) logConsumer(w io.Writer) func(execx.Token) {
