@@ -157,7 +157,7 @@ func TestEndToEnd(t *testing.T) {
 3`,
 			args: []string{
 				"empty",
-				`awk '{print $1*10}'`
+				`awk '{print $1*10}'`,
 				"--exec", "bash @MAIN",
 				"--script", `{{.Map}}`,
 			},
