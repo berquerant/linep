@@ -27,6 +27,9 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 	if err := sc.SetFlags(fs); err != nil {
 		return nil, err
 	}
+	if err := fs.Parse(os.Args); err != nil {
+		return nil, err
+	}
 	var flagConfig Config
 	if err := sc.FromFlags(&flagConfig, fs); err != nil {
 		return nil, err
@@ -51,7 +54,10 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 		config.Map = fs.Arg(3)
 		config.Reduce = fs.Arg(4)
 	default:
-		return nil, fmt.Errorf("require 1 - 4 positional arguments")
+		return nil, fmt.Errorf(
+			"require 1 - 4 positional arguments: args: %v positional: %v",
+			os.Args, fs.Args(),
+		)
 	}
 	config.TemplateName = fs.Arg(1)
 
