@@ -37,7 +37,7 @@ func main() {
 	if err := func() error {
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer stop()
-		e, err := config.Executor()
+		e, err := config.Executor(os.Stdin, os.Stdout, os.Stderr)
 		if err != nil {
 			return err
 		}
