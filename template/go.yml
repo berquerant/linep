@@ -1,7 +1,7 @@
 name: go
 init: |
   go mod init @MAIN_DIR
-  go mo tidy
+  go mod tidy
   go fmt
 exec: |
   go run @MAIN
