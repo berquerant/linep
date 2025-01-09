@@ -1,0 +1,25 @@
+name: python
+alias:
+  - py
+exec: |
+  python @MAIN
+main: main.py
+script: |
+  import sys
+  import signal
+  {{- range .Import}}
+  import {{.}}
+  {{- end}}
+  signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+  {{- with .Init}}
+  {{.}}
+  {{- end}}
+  try:
+    for x in sys.stdin:
+      x = x.rstrip()
+      {{.Map | nindent 4}}
+    except BrokenPipeError:
+      pass
+  {{- with .Reduce}}
+  {{.}}
+  {{- end}}

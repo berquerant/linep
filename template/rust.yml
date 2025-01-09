@@ -1,0 +1,26 @@
+name: rust
+alias:
+  - rs
+init: |
+  cargo init
+  cargo update
+exec: cargo run
+main: main.rs
+script: |
+  use std::io;
+  {{- range .Import}}
+  {{.}};
+  {{- end}}
+  fn main() {
+    {{- with .Init}}
+    {{.}}
+    {{- end}}
+    let __lines = io::stdin().lines();
+    for __line in __lines {
+      let x = __line.unwrap();
+      {{.Map}}
+    }
+    {{- with .Reduce}}
+    {{.}}
+    {{- end}}
+  }

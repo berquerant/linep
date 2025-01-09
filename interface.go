@@ -9,21 +9,29 @@ import (
 
 func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 	var (
-		flagConfig, envConfig Config
-		sc                    = NewStructConfig()
-		merger                = NewConfigMerger()
+		defaultConfig Config
+		err           error
+		sc            = defaultConfig.StructConfig()
+		merger        = defaultConfig.Merger()
 	)
-
+	if err := sc.FromDefault(&defaultConfig); err != nil {
+		return nil, err
+	}
+	var envConfig Config
 	if err := sc.FromEnv(&envConfig); err != nil {
+		return nil, err
+	}
+	if envConfig, err = merger.Merge(defaultConfig, envConfig); err != nil {
 		return nil, err
 	}
 	if err := sc.SetFlags(fs); err != nil {
 		return nil, err
 	}
-	if err := fs.Parse(os.Args); err != nil {
+	var flagConfig Config
+	if err := sc.FromFlags(&flagConfig, fs); err != nil {
 		return nil, err
 	}
-	if err := sc.FromFlags(&flagConfig, fs); err != nil {
+	if flagConfig, err = merger.Merge(defaultConfig, flagConfig); err != nil {
 		return nil, err
 	}
 	config, err := merger.Merge(envConfig, flagConfig)
@@ -45,7 +53,7 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 	default:
 		return nil, fmt.Errorf("require 1 - 4 positional arguments")
 	}
-	config.Lang = fs.Arg(1)
+	config.TemplateName = fs.Arg(1)
 
 	if x, err := os.Getwd(); err == nil {
 		config.PWD = x

@@ -37,8 +37,11 @@ func main() {
 	if err := func() error {
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer stop()
-		r := linep.Runner(*config)
-		return r.Run(ctx)
+		e, err := config.Executor()
+		if err != nil {
+			return err
+		}
+		return e.Execute(ctx)
 	}(); err != nil {
 		failOnError(err)
 	}

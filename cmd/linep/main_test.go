@@ -135,24 +135,6 @@ func TestEndToEnd(t *testing.T) {
 `,
 		},
 		{
-			title: "bash",
-			input: `1
-2
-3`,
-			args: []string{
-				"bash",
-				`awk '{print $1 + 1}'`,
-				"--cmd", "bash",
-				"--tmpl", `#!/bin/bash
-{{.Map}}`,
-				"--main", "main.sh",
-			},
-			want: `2
-3
-4
-`,
-		},
-		{
 			title: "py map without pipenv",
 			input: `1
 2
@@ -160,8 +142,24 @@ func TestEndToEnd(t *testing.T) {
 			args: []string{
 				"pipenv",
 				`print(x+"0")`,
-				"--cmd", "python",
+				"--exec", "python @MAIN",
 				"--init", "sleep 0",
+			},
+			want: `10
+20
+30
+`,
+		},
+		{
+			title: "bash",
+			input: `1
+2
+3`,
+			args: []string{
+				"empty",
+				`awk '{print $1*10}'`
+				"--exec", "bash @MAIN",
+				"--script", `{{.Map}}`,
 			},
 			want: `10
 20
