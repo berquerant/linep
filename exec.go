@@ -35,7 +35,7 @@ func (e *Executor) init() error {
 			return err
 		}
 	}
-	dir, err := os.MkdirTemp(e.WorkDir, "linep")
+	dir, err := MkdirTemp(e.WorkDir, "linep")
 	if err != nil {
 		return err
 	}
