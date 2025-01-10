@@ -15,7 +15,7 @@ script: |
   try:
     for x in sys.stdin:
       x = x.rstrip()
-      {{.Map | nindent 4}}
+      {{- .Map | nindent 4}}
   except BrokenPipeError:
     pass
   {{- with .Reduce}}
