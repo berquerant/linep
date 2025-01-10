@@ -50,31 +50,32 @@ func main() {
 const usage = `%[1]s -- process lines by one liner
 
 Usage:
-%[1]s LANG MAP [FLAGS]
-%[1]s LANG INIT MAP [FLAGS]
-%[1]s LANG INIT MAP REDUCE [FLAGS]
+%[1]s TEMPLATE MAP [FLAGS]
+%[1]s TEMPLATE INIT MAP [FLAGS]
+%[1]s TEMPLATE INIT MAP REDUCE [FLAGS]
 
-LANG: go, py, python, pipenv, rs, rust.
+TEMPLATE: go, py, python, pipenv, rs, rust
 
-Requirements:
-- go
-- python, pipenv, pyenv
-- cargo
+Requirements of templates:
+go: go
+python, py: python
+pipenv: pipenv, pyenv
+rust, rs: cargo
 
 Examples:
-> seq 3 | %[1]s go 'fmt.Println(x+"0")'
+> seq 3 | %[1]s go 'fmt.Println(x+"0")' -q
 10
 20
 30
 
-> seq 10 | %[1]s rust 'let n:i32=x.parse().unwrap();if n%%2==0{println!("{}",n)}'
+> seq 10 | %[1]s rust 'let n:i32=x.parse().unwrap();if n%%2==0{println!("{}",n)}' -q
 2
 4
 6
 8
 10
 
-> seq 4 | %[1]s pipenv 'acc=[]' 'acc.append(int(x));print(math.prod(acc))' 'print(sum(acc))' --import 'math'
+> seq 4 | %[1]s pipenv 'acc=[]' 'acc.append(int(x));print(math.prod(acc))' 'print(sum(acc))' --import 'math' -q
 1
 2
 6
@@ -88,23 +89,6 @@ Examples:
 30
 # is almost equivalent to
 > seq 3 | %[1]s py 'print(x+"0")'
-
-# display formatted script via preCmd
-> %[1]s pipenv 'acc=[]' 'acc.append(int(x));print(math.prod(acc))' 'print(sum(acc))' --import 'math' --preCmd 'black --quiet' --dry
-import sys
-import signal
-import math
-
-signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-acc = []
-try:
-    for x in sys.stdin:
-        x = x.rstrip()
-        acc.append(int(x))
-        print(math.prod(acc))
-except BrokenPipeError:
-    pass
-print(sum(acc))
 
 # indent MAP (python)
 > %[1]s py 'r={}' 'x=x.split(".")[-1]
@@ -130,12 +114,49 @@ except BrokenPipeError:
 for k, v in r.items():
   print(f"{k}\t{v}")
 
+Templates:
+TEMPLATE argument can be a template filename.
+A template file format is:
+
+# template name, required.
+name: sample
+# generated script name, required.
+main: main.go
+# aliases of name.
+# also used by TEMPLATE argument.
+alias:
+  - smpl
+# template of script body (main.go, main.py, ...).
+# executed by https://pkg.go.dev/text/template with https://masterminds.github.io/sprig/
+# available fields:
+#   Init   : INIT argument (string)
+#   Map    : MAP argument (string)
+#   Reduce : REDUCE argument (string)
+#   Import : --import argument (slice of string)
+script: |
+  ...
+# init script command.
+# initialize a directory of generated script like 'go mod init'.
+# macros are replaced with a reference of an environment variable.
+# available macros:
+#   @MAIN     : main of this template
+#   @WORK_DIR : --workDir argument
+#   @EXEC_PWD : current directory of %[1]s execution
+#   @MAIN_DIR : directory of the generated script
+init: |
+  ...
+# execute script command.
+# execute generated script like 'go run @MAIN'.
+# macros are available.
+exec: |
+  ...
+
+# show template
+> %[1]s go --displayTemplate
+
 Environment variables:
 You can use the flag name with the hyphen removed and converted to uppercase as an environment variable.
 If both the corresponding flag and the environment variable are specified at the same time, the flag takes precedence.
-
-PWD is the temporary directory where the generated script exists.
-If you want to refer to the directory from which linep is executed, please use EXEC_PWD.
 
 Flags:
 `
