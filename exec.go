@@ -135,7 +135,7 @@ func (e Executor) runScript(
 	script = e.replaceMacros(script)
 	s := execx.NewScript(script, e.Shell[0], e.Shell[1:]...)
 	s.Env = e.newEnv()
-	s.KeepScriptFile = e.KeepScript
+	// s.KeepScriptFile = e.KeepScript
 
 	logAttr := []any{
 		slog.String("dir", e.tmpDir),
