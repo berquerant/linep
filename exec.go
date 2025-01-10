@@ -60,12 +60,13 @@ func (e *Executor) Execute(ctx context.Context) error {
 	if err := e.renderTemplate(); err != nil {
 		return fmt.Errorf("%w: render template", err)
 	}
-	slog.Debug("run init")
-	if err := e.runScript(ctx, nil, e.Template.Init); err != nil {
+	slog.Debug("run:init")
+	// redirect init output to stderr
+	if err := e.runScript(ctx, nil, e.Stderr, e.Stderr, e.Template.Init); err != nil {
 		return fmt.Errorf("%w: run init", err)
 	}
-	slog.Debug("run exec")
-	if err := e.runScript(ctx, e.Stdin, e.Template.Exec); err != nil {
+	slog.Debug("run:exec")
+	if err := e.runScript(ctx, e.Stdin, e.Stdout, e.Stderr, e.Template.Exec); err != nil {
 		return fmt.Errorf("%w: run exec", err)
 	}
 
@@ -127,12 +128,21 @@ func (e Executor) newEnv() execx.Env {
 func (e Executor) runScript(
 	ctx context.Context,
 	stdin io.Reader,
+	stdout io.Writer,
+	stderr io.Writer,
 	script string,
 ) error {
 	script = e.replaceMacros(script)
 	s := execx.NewScript(script, e.Shell[0], e.Shell[1:]...)
 	s.Env = e.newEnv()
 	s.KeepScriptFile = e.KeepScript
+
+	logAttr := []any{
+		slog.String("dir", e.tmpDir),
+		slog.String("script", script),
+		slog.String("expaned_script", s.Env.Expand(script)),
+	}
+	slog.Debug("executor:run", logAttr...)
 
 	err := s.Runner(func(cmd *execx.Cmd) error {
 		cmd.Dir = e.tmpDir
@@ -141,17 +151,12 @@ func (e Executor) runScript(
 			ctx,
 			execx.WithStdoutWriter(new(execx.NullBuffer)),
 			execx.WithStderrWriter(new(execx.NullBuffer)),
-			execx.WithStdoutConsumer(e.logConsumer(e.Stdout)),
-			execx.WithStderrConsumer(e.logConsumer(e.Stderr)),
+			execx.WithStdoutConsumer(e.logConsumer(stdout)),
+			execx.WithStderrConsumer(e.logConsumer(stderr)),
 		)
 		return err
 	})
-	slog.Debug("Executor",
-		slog.String("Dir", e.tmpDir),
-		slog.String("script", script),
-		slog.String("expaned_script", s.Env.Expand(script)),
-		WithErr(err),
-	)
+	slog.Debug("executor:end", append(logAttr, WithErr(err))...)
 	return err
 }
 

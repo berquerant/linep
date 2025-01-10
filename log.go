@@ -1,6 +1,7 @@
 package linep
 
 import (
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -22,4 +23,8 @@ func SetupLogger(debug, quiet bool) {
 		Level: level,
 	})
 	slog.SetDefault(slog.New(handler))
+}
+
+func WithErr(err error) any {
+	return slog.String("err", fmt.Sprintf("%v", err))
 }
