@@ -1,0 +1,6 @@
+name: empty
+alias:
+  - "0"
+  - null
+  - nil
+main: empty

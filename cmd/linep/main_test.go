@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -19,12 +20,63 @@ func TestEndToEnd(t *testing.T) {
 		t.Fatalf("%s help %v", e.cmd, err)
 	}
 
+	customTemplate := filepath.Join(t.TempDir(), "custom.yml")
+	t.Run("prepare template", func(t *testing.T) {
+		f, err := os.Create(customTemplate)
+		if err != nil {
+			t.Error(err)
+		}
+		defer f.Close()
+		fmt.Fprintln(f, `name: custom
+init: |
+  go mod init @MAIN_DIR
+  go mod tidy
+  go fmt
+exec: go run @MAIN
+main: main.go
+script: |
+  package main
+  import (
+    "bufio"
+    "os"
+    "fmt"
+    "strconv"
+  )
+  func main() {
+    __s := bufio.NewScanner(os.Stdin)
+    for __s.Scan() {
+      x, err := strconv.Atoi(__s.Text())
+      if err != nil {
+        panic(err)
+      }
+      {{.Map}}
+    }
+    if err := __s.Err(); err != nil {
+      panic(err)
+    }
+  }`)
+	})
+
 	for _, tc := range []struct {
 		title string
 		input string
 		args  []string
 		want  string
 	}{
+		{
+			title: "custom",
+			input: `1
+2
+3`,
+			args: []string{
+				customTemplate,
+				`fmt.Printf("%03d\n", x)`,
+			},
+			want: `001
+002
+003
+`,
+		},
 		{
 			title: "python indent",
 			input: `main_test.go`,
@@ -135,24 +187,6 @@ func TestEndToEnd(t *testing.T) {
 `,
 		},
 		{
-			title: "bash",
-			input: `1
-2
-3`,
-			args: []string{
-				"bash",
-				`awk '{print $1 + 1}'`,
-				"--cmd", "bash",
-				"--tmpl", `#!/bin/bash
-{{.Map}}`,
-				"--main", "main.sh",
-			},
-			want: `2
-3
-4
-`,
-		},
-		{
 			title: "py map without pipenv",
 			input: `1
 2
@@ -160,8 +194,24 @@ func TestEndToEnd(t *testing.T) {
 			args: []string{
 				"pipenv",
 				`print(x+"0")`,
-				"--cmd", "python",
+				"--exec", "python @MAIN",
 				"--init", "sleep 0",
+			},
+			want: `10
+20
+30
+`,
+		},
+		{
+			title: "bash",
+			input: `1
+2
+3`,
+			args: []string{
+				"empty",
+				`awk '{print $1*10}'`,
+				"--exec", "bash @MAIN",
+				"--script", `{{.Map}}`,
 			},
 			want: `10
 20

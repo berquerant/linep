@@ -1,0 +1,34 @@
+name: go
+init: |
+  go mod init @MAIN_DIR
+  go mod tidy
+  go fmt
+exec: go run @MAIN
+main: main.go
+script: |
+  package main
+  import (
+    "bufio"
+    "os"
+    "fmt"
+    {{- range .Import}}
+    "{{.}}"
+    {{- end}}
+  )
+  func main() {
+    {{- with .Init}}
+    {{.}}
+    {{- end}}
+    __scanner := bufio.NewScanner(os.Stdin)
+    for __scanner.Scan() {
+      x := __scanner.Text()
+      {{.Map}}
+    }
+    if err := __scanner.Err(); err != nil {
+      fmt.Fprintf(os.Stderr, "%v\n", err)
+      os.Exit(1)
+    }
+    {{- with .Reduce}}
+    {{.}}
+    {{- end}}
+  }

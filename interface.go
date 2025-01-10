@@ -9,12 +9,19 @@ import (
 
 func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 	var (
-		flagConfig, envConfig Config
-		sc                    = NewStructConfig()
-		merger                = NewConfigMerger()
+		defaultConfig Config
+		err           error
+		sc            = defaultConfig.StructConfig()
+		merger        = defaultConfig.Merger()
 	)
-
+	if err := sc.FromDefault(&defaultConfig); err != nil {
+		return nil, err
+	}
+	var envConfig Config
 	if err := sc.FromEnv(&envConfig); err != nil {
+		return nil, err
+	}
+	if envConfig, err = merger.Merge(defaultConfig, envConfig); err != nil {
 		return nil, err
 	}
 	if err := sc.SetFlags(fs); err != nil {
@@ -23,7 +30,11 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 	if err := fs.Parse(os.Args); err != nil {
 		return nil, err
 	}
+	var flagConfig Config
 	if err := sc.FromFlags(&flagConfig, fs); err != nil {
+		return nil, err
+	}
+	if flagConfig, err = merger.Merge(defaultConfig, flagConfig); err != nil {
 		return nil, err
 	}
 	config, err := merger.Merge(envConfig, flagConfig)
@@ -43,9 +54,14 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 		config.Map = fs.Arg(3)
 		config.Reduce = fs.Arg(4)
 	default:
-		return nil, fmt.Errorf("require 1 - 4 positional arguments")
+		if !config.DisplayTemplate {
+			return nil, fmt.Errorf(
+				"require 1 - 4 positional arguments: args: %v positional: %v",
+				os.Args, fs.Args(),
+			)
+		}
 	}
-	config.Lang = fs.Arg(1)
+	config.TemplateName = fs.Arg(1)
 
 	if x, err := os.Getwd(); err == nil {
 		config.PWD = x
