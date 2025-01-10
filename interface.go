@@ -54,10 +54,12 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 		config.Map = fs.Arg(3)
 		config.Reduce = fs.Arg(4)
 	default:
-		return nil, fmt.Errorf(
-			"require 1 - 4 positional arguments: args: %v positional: %v",
-			os.Args, fs.Args(),
-		)
+		if !config.DisplayTemplate {
+			return nil, fmt.Errorf(
+				"require 1 - 4 positional arguments: args: %v positional: %v",
+				os.Args, fs.Args(),
+			)
+		}
 	}
 	config.TemplateName = fs.Arg(1)
 

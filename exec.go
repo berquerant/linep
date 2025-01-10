@@ -11,16 +11,18 @@ import (
 	"strings"
 
 	"github.com/berquerant/execx"
+	"gopkg.in/yaml.v3"
 )
 
 type Executor struct {
-	Shell      []string
-	Template   *Template
-	Args       *ScriptArgs
-	ExecPWD    string
-	WorkDir    string
-	KeepScript bool
-	Dry        bool
+	Shell           []string
+	Template        *Template
+	Args            *ScriptArgs
+	ExecPWD         string
+	WorkDir         string
+	KeepScript      bool
+	Dry             bool
+	DisplayTemplate bool
 
 	Stdin  io.Reader
 	Stdout io.Writer
@@ -45,6 +47,13 @@ func (e *Executor) init() error {
 }
 
 func (e *Executor) Execute(ctx context.Context) error {
+	if e.DisplayTemplate {
+		if err := e.displayTemplate(os.Stdout); err != nil {
+			return fmt.Errorf("%w: display template", err)
+		}
+		return nil
+	}
+
 	if e.Dry {
 		if err := e.dump(os.Stdout); err != nil {
 			return fmt.Errorf("%w: dry run", err)
@@ -81,6 +90,15 @@ func (e Executor) renderTemplate() error {
 	defer f.Close()
 
 	return e.dump(f)
+}
+
+func (e Executor) displayTemplate(w io.Writer) error {
+	b, err := yaml.Marshal(e.Template)
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintf(w, "%s", b)
+	return err
 }
 
 func (e Executor) dump(w io.Writer) error {
