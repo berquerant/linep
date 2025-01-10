@@ -27,11 +27,10 @@ type Config struct {
 	WorkDir        string   `json:"workDir" yaml:"workDir" name:"workDir" short:"w" usage:"working directory" default:".linep"`
 	Shell          []string `json:"sh" yaml:"sh" name:"sh" default:"sh" usage:"execute shell command; separated by ';'"`
 	TemplateName   string   `json:"name" yaml:"name"`
-	TemplateScript string   `json:"script" yaml:"script" name:"script" usage:"override script"`
-	TemplateInit   string   `json:"init" yaml:"init" name:"init" usage:"override init script"`
-	TemplateExec   string   `json:"exec" yaml:"exec" name:"exec" usage:"override exec script"`
-	TemplateMain   string   `json:"main" yaml:"main" name:"main" usage:"override main script name"`
-	TemplateFile   string   `json:"template" yaml:"template" name:"template" short:"t" usage:"template file"`
+	TemplateScript string   `json:"tscript" yaml:"tscript" name:"script" usage:"override script"`
+	TemplateInit   string   `json:"tinit" yaml:"tinit" name:"init" usage:"override init script"`
+	TemplateExec   string   `json:"texec" yaml:"texec" name:"exec" usage:"override exec script"`
+	TemplateMain   string   `json:"tmain" yaml:"tmain" name:"main" usage:"override main script name"`
 	Init           string   `json:"init" yaml:"init"`
 	Map            string   `json:"map" yaml:"map"`
 	Reduce         string   `json:"reduce" yaml:"reduce"`
@@ -76,23 +75,19 @@ func (c Config) Template() (*Template, error) {
 }
 
 func (c Config) selectTemplate() (*Template, error) {
-	if file := c.TemplateFile; file != "" {
-		x, err := c.loadTemplate()
-		if err != nil {
-			return nil, fmt.Errorf("%w: load template %s", err, file)
-		}
-		return x, nil
-	}
-
 	x, ok := builtinTemplates.get(c.TemplateName)
 	if !ok {
-		return nil, fmt.Errorf("template %s not found", c.TemplateName)
+		x, err := c.loadTemplate()
+		if err != nil {
+			return nil, fmt.Errorf("%w: load template %s", err, c.TemplateName)
+		}
+		return x, nil
 	}
 	return x, nil
 }
 
 func (c Config) loadTemplate() (*Template, error) {
-	f, err := os.Open(c.TemplateFile)
+	f, err := os.Open(c.TemplateName)
 	if err != nil {
 		return nil, err
 	}
