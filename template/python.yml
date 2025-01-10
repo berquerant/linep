@@ -1,8 +1,7 @@
 name: python
 alias:
   - py
-exec: |
-  python @MAIN
+exec: python @MAIN
 main: main.py
 script: |
   import sys

@@ -3,8 +3,7 @@ init: |
   go mod init @MAIN_DIR
   go mod tidy
   go fmt
-exec: |
-  go run @MAIN
+exec: go run @MAIN
 main: main.go
 script: |
   package main

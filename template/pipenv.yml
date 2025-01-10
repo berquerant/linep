@@ -1,7 +1,6 @@
 name: pipenv
 init: pipenv install --dev
-exec: |
-  pipenv run @MAIN
+exec: pipenv run python @MAIN
 main: main.py
 script: |
   import sys
