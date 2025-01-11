@@ -1,6 +1,6 @@
 name: go
 init: |
-  go mod init @SRC_DIR
+  go mod init "$(basename @SRC_DIR)"
   go mod tidy
   go fmt
 exec: go run @MAIN
