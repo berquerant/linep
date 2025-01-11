@@ -39,7 +39,7 @@ type Config struct {
 	DisplayTemplate bool     `json:"displayTemplate" yaml:"displayTemplate" name:"displayTemplate" usage:"do not run; display template"`
 }
 
-func (c Config) Executor(stdin io.Reader, stdout, stderr io.Writer) (*Executor, error) {
+func (c Config) Executor(stdin io.Reader, stdout io.Writer) (*Executor, error) {
 	t, err := c.Template()
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (c Config) Executor(stdin io.Reader, stdout, stderr io.Writer) (*Executor, 
 		DisplayTemplate: c.DisplayTemplate,
 		Stdin:           stdin,
 		Stdout:          stdout,
-		Stderr:          stderr,
+		Stderr:          Stderr(c.Quiet),
 	}, nil
 }
 
