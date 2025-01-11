@@ -118,7 +118,7 @@ func (Executor) replaceMacros(s string) string {
 	seed := []string{
 		"EXEC_PWD",
 		"MAIN",
-		"MAIN_DIR",
+		"SRC_DIR",
 		"WORK_DIR",
 	}
 	var (
@@ -138,7 +138,7 @@ func (e Executor) newEnv() execx.Env {
 	env := execx.EnvFromEnviron()
 	env.Set("EXEC_PWD", e.ExecPWD)
 	env.Set("MAIN", e.Template.Main)
-	env.Set("MAIN_DIR", filepath.Dir(e.scriptFilename()))
+	env.Set("SRC_DIR", filepath.Dir(e.scriptFilename()))
 	env.Set("WORK_DIR", e.WorkDir)
 	return env
 }

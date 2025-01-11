@@ -29,7 +29,7 @@ func TestEndToEnd(t *testing.T) {
 		defer f.Close()
 		fmt.Fprintln(f, `name: custom
 init: |
-  go mod init @MAIN_DIR
+  go mod init @SRC_DIR
   go mod tidy
   go fmt
 exec: go run @MAIN
@@ -56,6 +56,8 @@ script: |
     }
   }`)
 	})
+
+	const workDir = ".linep"
 
 	for _, tc := range []struct {
 		title string
@@ -224,7 +226,7 @@ script: |
 			stdin := bytes.NewBufferString(tc.input)
 			var stdout bytes.Buffer
 
-			args := []string{"--workDir", t.TempDir()}
+			args := []string{"--workDir", workDir}
 			args = append(args, tc.args...)
 			assert.Nil(t, run(&stdout, stdin, e.cmd, args...))
 			assert.Equal(t, tc.want, stdout.String())
