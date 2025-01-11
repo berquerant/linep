@@ -35,8 +35,6 @@ jobs:
           set -e
           rustup set profile minimal
           rustup install stable
-      - name: Display Go version
-        run: go version
       - name: Lint
         run: ./task lint
       - name: Test
