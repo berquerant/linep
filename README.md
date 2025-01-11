@@ -97,7 +97,7 @@ script: |
 #   @MAIN     : main of this template
 #   @WORK_DIR : --workDir argument
 #   @EXEC_PWD : current directory of linep execution
-#   @MAIN_DIR : directory of the generated script
+#   @SRC_DIR  : directory of the generated script
 init: |
   ...
 # execute script command.

@@ -54,7 +54,7 @@ Usage:
 %[1]s TEMPLATE INIT MAP [FLAGS]
 %[1]s TEMPLATE INIT MAP REDUCE [FLAGS]
 
-TEMPLATE: go, py, python, pipenv, rs, rust
+TEMPLATE: go, py, python, pipenv, rs, rust, nil, null, empty
 
 Requirements of templates:
 go: go
@@ -116,6 +116,7 @@ for k, v in r.items():
 
 Templates:
 TEMPLATE argument can be a template filename.
+empty (nil, null) template is for overriding.
 A template file format is:
 
 # template name, required.
@@ -142,7 +143,7 @@ script: |
 #   @MAIN     : main of this template
 #   @WORK_DIR : --workDir argument
 #   @EXEC_PWD : current directory of %[1]s execution
-#   @MAIN_DIR : directory of the generated script
+#   @SRC_DIR  : directory of the generated script
 init: |
   ...
 # execute script command.
