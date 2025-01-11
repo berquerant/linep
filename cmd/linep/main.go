@@ -83,7 +83,7 @@ Examples:
 10
 
 # without pipenv
-> seq 3 | %[1]s pipenv 'print(x+"0")' --cmd python --init 'sleep 0'
+> seq 3 | %[1]s pipenv 'print(x+"0")' --exec 'python @MAIN' --init 'sleep 0'
 10
 20
 30

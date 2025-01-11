@@ -9,7 +9,7 @@ linep TEMPLATE MAP [FLAGS]
 linep TEMPLATE INIT MAP [FLAGS]
 linep TEMPLATE INIT MAP REDUCE [FLAGS]
 
-TEMPLATE: go, py, python, pipenv, rs, rust
+TEMPLATE: go, py, python, pipenv, rs, rust, nil, null, empty
 
 Requirements of templates:
 go: go
@@ -38,7 +38,7 @@ Examples:
 10
 
 # without pipenv
-> seq 3 | linep pipenv 'print(x+"0")' --cmd python --init 'sleep 0'
+> seq 3 | linep pipenv 'print(x+"0")' --exec 'python @MAIN' --init 'sleep 0'
 10
 20
 30
@@ -71,6 +71,7 @@ for k, v in r.items():
 
 Templates:
 TEMPLATE argument can be a template filename.
+empty (nil, null) template is for overriding.
 A template file format is:
 
 # template name, required.
