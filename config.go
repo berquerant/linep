@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"reflect"
 	"slices"
 	"strings"
@@ -24,7 +25,7 @@ type Config struct {
 	Debug           bool     `json:"debug" yaml:"debug" name:"debug" usage:"enable debug logs"`
 	Quiet           bool     `json:"quiet" yaml:"quiet" name:"quiet" short:"q" usage:"quiet stderr logs"`
 	Keep            bool     `json:"keep" yaml:"keep" name:"keep" usage:"keep generated script directory"`
-	WorkDir         string   `json:"workDir" yaml:"workDir" name:"workDir" short:"w" usage:"working directory" default:".linep"`
+	WorkDir         string   `json:"workDir" yaml:"workDir" name:"workDir" short:"w" usage:"working directory; default: $HOME/.linep"`
 	Shell           []string `json:"sh" yaml:"sh" name:"sh" default:"sh" usage:"execute shell command; separated by ';'"`
 	TemplateName    string   `json:"name" yaml:"name"`
 	TemplateScript  string   `json:"tscript" yaml:"tscript" name:"script" usage:"override script"`
@@ -37,6 +38,18 @@ type Config struct {
 	Import          []string `json:"import" yaml:"import" name:"import" short:"i" usage:"additional libraries; separated by '|'"`
 	PWD             string   `json:"pwd" yaml:"pwd"`
 	DisplayTemplate bool     `json:"displayTemplate" yaml:"displayTemplate" name:"displayTemplate" usage:"do not run; display template"`
+}
+
+func (c *Config) Initialize() error {
+	if c.WorkDir == "" {
+		x, err := os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+		c.WorkDir = filepath.Join(x, ".linep")
+	}
+
+	return nil
 }
 
 func (c Config) Executor(stdin io.Reader, stdout io.Writer) (*Executor, error) {

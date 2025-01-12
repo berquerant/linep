@@ -69,5 +69,10 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 		config.PWD = "."
 	}
 
-	return &config, nil
+	c := &config
+	if err := c.Initialize(); err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }

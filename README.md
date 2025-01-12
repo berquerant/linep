@@ -126,5 +126,5 @@ Flags:
   -q, --quiet             quiet stderr logs
       --script string     override script
       --sh string         execute shell command; separated by ';' (default "sh")
-  -w, --workDir string    working directory (default ".linep")
+  -w, --workDir string    working directory; default: $HOME/.linep
 ```
