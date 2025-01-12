@@ -41,6 +41,7 @@ func main() {
 		if err != nil {
 			return err
 		}
+		defer e.Close()
 		return e.Execute(ctx)
 	}(); err != nil {
 		failOnError(err)

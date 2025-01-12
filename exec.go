@@ -188,5 +188,6 @@ func (e Executor) Close() error {
 	if e.KeepScript {
 		return nil
 	}
+	slog.Debug("executor:close", slog.String("work_dir", e.WorkDir))
 	return os.RemoveAll(e.WorkDir)
 }
