@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/berquerant/execx v0.8.0
-	github.com/berquerant/structconfig v0.2.2
+	github.com/berquerant/structconfig v0.3.0
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -20,7 +20,6 @@ require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/ProtonMail/go-crypto v1.1.3 // indirect
 	github.com/alecthomas/chroma/v2 v2.14.0 // indirect
-	github.com/berquerant/dataclass v0.4.0 // indirect
 	github.com/berquerant/goconfig v0.3.0 // indirect
 	github.com/bitfield/gotestdox v0.2.2 // indirect
 	github.com/chainguard-dev/git-urls v1.0.2 // indirect
