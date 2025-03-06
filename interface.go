@@ -4,40 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/berquerant/structconfig"
 	"github.com/spf13/pflag"
 )
 
 func NewConfig(fs *pflag.FlagSet) (*Config, error) {
-	var (
-		defaultConfig Config
-		err           error
-		sc            = defaultConfig.StructConfig()
-		merger        = defaultConfig.Merger()
-	)
-	if err := sc.FromDefault(&defaultConfig); err != nil {
-		return nil, err
-	}
-	var envConfig Config
-	if err := sc.FromEnv(&envConfig); err != nil {
-		return nil, err
-	}
-	if envConfig, err = merger.Merge(defaultConfig, envConfig); err != nil {
-		return nil, err
-	}
-	if err := sc.SetFlags(fs); err != nil {
-		return nil, err
-	}
-	if err := fs.Parse(os.Args); err != nil {
-		return nil, err
-	}
-	var flagConfig Config
-	if err := sc.FromFlags(&flagConfig, fs); err != nil {
-		return nil, err
-	}
-	if flagConfig, err = merger.Merge(defaultConfig, flagConfig); err != nil {
-		return nil, err
-	}
-	config, err := merger.Merge(envConfig, flagConfig)
+	var b Config
+	config, err := structconfig.NewConfigWithMerge(b.StructConfig(), b.Merger(), fs)
 	if err != nil {
 		return nil, err
 	}
@@ -69,10 +42,9 @@ func NewConfig(fs *pflag.FlagSet) (*Config, error) {
 		config.PWD = "."
 	}
 
-	c := &config
-	if err := c.Initialize(); err != nil {
+	if err := config.Initialize(); err != nil {
 		return nil, err
 	}
 
-	return c, nil
+	return config, nil
 }
