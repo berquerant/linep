@@ -27,8 +27,8 @@ github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPd
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
 github.com/berquerant/execx v0.11.1 h1:77XH0j35KmS+zgKdUcrXsUTvgQzVkMgBt/rhqhPagGY=
 github.com/berquerant/execx v0.11.1/go.mod h1:Y8PRjnJecy0K6i8jgvqKEjngM8mcy6Ase51D6T1fG3k=
-github.com/berquerant/structconfig v0.5.0 h1:523ZNaqpVO8Lq9+QMOfvs6ocUWnBg/TwBJaLwRR/P7g=
-github.com/berquerant/structconfig v0.5.0/go.mod h1:CTZkigJydRMSnEEzpIMnKpeeRVwcS+LshY8Xb1pvskA=
+github.com/berquerant/structconfig v0.5.1 h1:HKigxP8nlP7QgEMyJh88zuss6nVlC3UkAgCArxk9g2U=
+github.com/berquerant/structconfig v0.5.1/go.mod h1:6XP1+G6933IwLtu/3E88hFdGNbDx4P6U9CC0Dp6zIkw=
 github.com/bitfield/gotestdox v0.2.2 h1:x6RcPAbBbErKLnapz1QeAlf3ospg8efBsedU93CDsnE=
 github.com/bitfield/gotestdox v0.2.2/go.mod h1:D+gwtS0urjBrzguAkTM2wodsTQYFHdpx8eqRJ3N+9pY=
 github.com/chainguard-dev/git-urls v1.0.2 h1:pSpT7ifrpc5X55n4aTTm7FFUE+ZQHKiqpiwNkJrVcKQ=
