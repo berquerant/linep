@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/berquerant/execx v0.11.0
+	github.com/berquerant/execx v0.11.1
 	github.com/berquerant/structconfig v0.5.1
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
@@ -66,7 +66,7 @@ require (
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/telemetry v0.0.0-20250105011419-6d9ea865d014 // indirect
 	golang.org/x/term v0.29.0 // indirect
