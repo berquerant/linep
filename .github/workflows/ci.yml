@@ -21,7 +21,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6.0.0
         with:
-          go-version: "1.24"
+          go-version-file: "go.mod"
           check-latest: true
           cache-dependency-path: go.sum
       - name: Setup Python 3.13
