@@ -1,11 +1,11 @@
 module github.com/berquerant/linep
 
-go 1.24.4
+go 1.25.0
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/berquerant/execx v0.12.0
-	github.com/berquerant/structconfig v0.5.1
+	github.com/berquerant/structconfig v0.6.0
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
 	gopkg.in/yaml.v3 v3.0.1
